@@ -1,55 +1,40 @@
-# 内山, フルスタック開発に慣れるってよ...(RemixとPrismaですっぞ！！)
-目標期間: 1ヶ月
+# Welcome to Remix!
 
-Produced By: 朝鮮学校出身の男🇰🇵
+- 📖 [Remix docs](https://remix.run/docs)
 
-## 家計管理システムの仕様(超ザックリ)
-- 「支出」に含まれるデータは, 自由にが決めて良い
-- 支出を記録できる
-- 毎回の支出を見れる
-- 今までの支出の統計情報を確認・可視化できる
-- 目標貯金額に対する予想・実績・目標との差分の進捗を確認できる
-- 他の色んな人もアクセスすることを想定する
-- UIライブラリとかの指定はなし, 自分で好きなもの使ってもらう
+## Development
 
-## 課題1: 基本装備を揃えろ① (3~4営業日想定)
-ええから, 一旦ReactでWebページを作ってみよか？？🤔
-(描画に必要なデータは定数として別で定義して, それを渡すんやで)
+Run the dev server:
 
-### 課題進めるステップ案
-1. 「支出」に含まれるデータの種類と型を決める
-2. 「支出」のデモデータを作る(AIにやらせとけ)
-3. どんな画面が必要か考える
-4. 「作成」とか「編集」とか「削除」に関連する部分は一旦後回しにする
-5. 2で作った「支出」のデータを使って, 「表示」に関する画面を作っていく
+```shellscript
+npm run dev
+```
 
-## 課題2: 基本装備を揃えろ② (2~3営業日想定)
-んなら次は, データベースから生のSQLで取り出されたデータを, loaderの中で取得してみんかい😤
+## Deployment
 
-### 課題進めるステップ案
-1. DB設計する(ER図書いてみる)
-2. テーブル定義のSQLを作る
-3. デモデータを挿入するSQLを作る
-4. DBMSなんか選んで, 2と3で作ったSQLを実行する
-5. loaderを定義して, loaderの中でDBにアクセスしてSELECT文でデータを取る
-6. 今までは定数から渡されてたデータを, useLoaderDataを使ってloaderから取得するようにする
+First, build your app for production:
 
-## 課題3: 基本装備を揃えろ③ (1~2営業日想定)
-もうほぼ一緒やし, 今度はFEでフォームを作って, actionの中で生のSQLでデータを挿入せえや😎
+```sh
+npm run build
+```
 
+Then run the app in production mode:
 
-## 課題4: ORMとの出会い (1~2営業日想定)
-Prismaを入れてみぃ...ほんで今までの実装書き換えてみぃ...😩
+```sh
+npm start
+```
 
+Now you'll need to pick a host to deploy it to.
 
-## 課題5: 強くなったのは自分だけちゃうで (3~4営業日想定)
-もうちょっと複雑なユースケース, 実装してもうたれ👊
-(朝鮮学校出身のやつがもうちょい考えます...)
+### DIY
 
+If you're familiar with deploying Node applications, the built-in Remix app server is production-ready.
 
-## 課題6: アーキテクチャを味方につけろ (3~4営業日想定)
-ちょっと難しいかもやけど, 今までのサーバ側の処理を, 全部レイヤードアーキテクチャで書き換えたらええことあるで...
+Make sure to deploy the output of `npm run build`
 
-## 課題7: やっぱ使ってもらってなんぼやろ(自腹で頼む🙏)
-AWSでもGoogle Cloudでもええから, VM立ち上げてその中でアプリもDBも動かして, みんなからアクセスできるようにしてみようや💪
+- `build/server`
+- `build/client`
 
+## Styling
+
+This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever css framework you prefer. See the [Vite docs on css](https://vitejs.dev/guide/features.html#css) for more information.
