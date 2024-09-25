@@ -38,7 +38,7 @@ interface Expense {
 export default function ExpenseTrackerWithChart() {
   const [expenses, setExpenses] = useState<Expense[]>([]); // Expense型の配列を指定
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState<number | "">(""); // 初期状態は空文字
   const [category, setCategory] = useState<Category | "">("");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
@@ -68,8 +68,10 @@ export default function ExpenseTrackerWithChart() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    if (amount === "") return; // 空のまま送信されないようにする
+
     const newExpense: Expense = {
-      amount: Number(amount),
+      amount: Number(amount), // 入力された金額を数値に変換
       category: category as Category,
       description,
       date,
@@ -196,7 +198,9 @@ export default function ExpenseTrackerWithChart() {
           <input
             type='number'
             value={amount}
-            onChange={(e) => setAmount(e.target.value)}
+            onChange={(e) =>
+              setAmount(e.target.value === "" ? "" : Number(e.target.value))
+            } // 数値に変換
             required
             className='border border-gray-300 rounded p-2 w-full'
           />
