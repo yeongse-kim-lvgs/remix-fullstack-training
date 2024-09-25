@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Chart, Bar, Pie } from "react-chartjs-2";
 import "chart.js/auto";
+import dayjs from "dayjs";
 
 export default function ExpenseTrackerWithChart() {
   const [amount, setAmount] = useState("");
@@ -14,9 +15,8 @@ export default function ExpenseTrackerWithChart() {
 
   const categories = ["食費", "家賃", "交通費", "エンターテインメント", "雑費"];
 
-  // 初回レンダリング時に現在の日付を取得
   useEffect(() => {
-    const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD形式
+    const today = dayjs().format("YYYY-MM-DD"); // dayjsで現在の日付を取得し、YYYY-MM-DD形式にフォーマット
     setDate(today);
   }, []);
 
