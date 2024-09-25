@@ -3,21 +3,31 @@ import { Chart, Bar, Pie } from "react-chartjs-2";
 import "chart.js/auto";
 import dayjs from "dayjs";
 
+// Enumでカテゴリーを定義
+enum Category {
+  Food = "食費",
+  Rent = "家賃",
+  Transport = "交通費",
+  Entertainment = "エンターテインメント",
+  Misc = "雑費",
+}
+
 export default function ExpenseTrackerWithChart() {
   const [amount, setAmount] = useState("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState<Category | "">(""); // Enumか空文字を許容
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
   const [isFixed, setIsFixed] = useState(false);
   const [expenses, setExpenses] = useState([]);
-  const [editingIndex, setEditingIndex] = useState(null);
-  const [filterCategory, setFilterCategory] = useState("");
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [filterCategory, setFilterCategory] = useState<Category | "">(""); // Enumか空文字を許容
 
-  const categories = ["食費", "家賃", "交通費", "エンターテインメント", "雑費"];
+  // Enumからカテゴリーのリストを取得
+  const categories = Object.values(Category);
 
   // 初回レンダリング時に現在の日付を取得
   useEffect(() => {
-    const today = dayjs().format("YYYY-MM-DD"); // dayjsで現在の日付を取得し、YYYY-MM-DD形式にフォーマット
+    const today = dayjs().format("YYYY-MM-DD");
     setDate(today);
   }, []);
 
@@ -57,7 +67,7 @@ export default function ExpenseTrackerWithChart() {
     setAmount("");
     setCategory("");
     setDescription("");
-    setDate(dayjs().format("YYYY-MM-DD")); // 提出後に現在の日付にリセット
+    setDate(dayjs().format("YYYY-MM-DD"));
     setIsFixed(false);
   };
 
@@ -94,7 +104,6 @@ export default function ExpenseTrackerWithChart() {
   const dates = Object.keys(dailyExpenses);
   const amounts = Object.values(dailyExpenses);
 
-  // 型定義
   interface ExpenseData {
     labels: string[];
     datasets: {
@@ -129,17 +138,10 @@ export default function ExpenseTrackerWithChart() {
   };
 
   // カテゴリーごとの支出を集計
-  interface CategoryExpenses {
-    [key: string]: number;
-  }
-
-  const categoryExpenses: CategoryExpenses = expenses.reduce(
-    (acc: CategoryExpenses, expense) => {
-      acc[expense.category] = (acc[expense.category] || 0) + expense.amount;
-      return acc;
-    },
-    {}
-  );
+  const categoryExpenses = expenses.reduce((acc, expense) => {
+    acc[expense.category] = (acc[expense.category] || 0) + expense.amount;
+    return acc;
+  }, {});
 
   const pieData = {
     labels: Object.keys(categoryExpenses),
@@ -178,14 +180,14 @@ export default function ExpenseTrackerWithChart() {
           <label className='block'>カテゴリー:</label>
           <select
             value={category}
-            onChange={(e) => setCategory(e.target.value)}
+            onChange={(e) => setCategory(e.target.value as Category)}
             required
             className='border border-gray-300 rounded p-2 w-full'
           >
             <option value=''>選択してください</option>
-            {categories.map((category, index) => (
-              <option key={index} value={category}>
-                {category}
+            {categories.map((cat, index) => (
+              <option key={index} value={cat}>
+                {cat}
               </option>
             ))}
           </select>
@@ -230,14 +232,14 @@ export default function ExpenseTrackerWithChart() {
       <div className='mt-8'>
         <h2 className='text-xl font-semibold'>支出フィルター</h2>
         <select
-          onChange={(e) => setFilterCategory(e.target.value)}
+          onChange={(e) => setFilterCategory(e.target.value as Category)}
           value={filterCategory}
           className='border border-gray-300 rounded p-2 w-full'
         >
           <option value=''>すべて</option>
-          {categories.map((category, index) => (
-            <option key={index} value={category}>
-              {category}
+          {categories.map((cat, index) => (
+            <option key={index} value={cat}>
+              {cat}
             </option>
           ))}
         </select>
