@@ -15,11 +15,13 @@ export default function ExpenseTrackerWithChart() {
 
   const categories = ["食費", "家賃", "交通費", "エンターテインメント", "雑費"];
 
+  // 初回レンダリング時に現在の日付を取得
   useEffect(() => {
     const today = dayjs().format("YYYY-MM-DD"); // dayjsで現在の日付を取得し、YYYY-MM-DD形式にフォーマット
     setDate(today);
   }, []);
 
+  // ローカルストレージから保存された支出を取得
   useEffect(() => {
     const savedExpenses = localStorage.getItem("expenses");
     if (savedExpenses) {
@@ -27,6 +29,7 @@ export default function ExpenseTrackerWithChart() {
     }
   }, []);
 
+  // 支出データをローカルストレージに保存
   useEffect(() => {
     localStorage.setItem("expenses", JSON.stringify(expenses));
   }, [expenses]);
@@ -54,7 +57,7 @@ export default function ExpenseTrackerWithChart() {
     setAmount("");
     setCategory("");
     setDescription("");
-    setDate(new Date().toISOString().split("T")[0]); // 提出後に現在の日付にリセット
+    setDate(dayjs().format("YYYY-MM-DD")); // 提出後に現在の日付にリセット
     setIsFixed(false);
   };
 
@@ -91,7 +94,20 @@ export default function ExpenseTrackerWithChart() {
   const dates = Object.keys(dailyExpenses);
   const amounts = Object.values(dailyExpenses);
 
-  const barData = {
+  // 型定義
+  interface ExpenseData {
+    labels: string[];
+    datasets: {
+      label: string;
+      data: number[];
+      backgroundColor: string;
+      borderColor: string;
+      borderWidth: number;
+    }[];
+  }
+
+  // 日ごとの支出データ
+  const dailyExpensesData: ExpenseData = {
     labels: dates,
     datasets: [
       {
@@ -104,7 +120,7 @@ export default function ExpenseTrackerWithChart() {
     ],
   };
 
-  const barOptions = {
+  const chartOptions = {
     scales: {
       y: {
         beginAtZero: true,
@@ -257,7 +273,7 @@ export default function ExpenseTrackerWithChart() {
 
       <div className='mt-8'>
         <h2 className='text-xl font-semibold'>日ごとの支出グラフ</h2>
-        <Bar data={barData} options={barOptions} />
+        <Bar data={dailyExpensesData} options={chartOptions} />
       </div>
 
       <div className='mt-8'>
