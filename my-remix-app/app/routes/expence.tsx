@@ -129,10 +129,17 @@ export default function ExpenseTrackerWithChart() {
   };
 
   // カテゴリーごとの支出を集計
-  const categoryExpenses = expenses.reduce((acc, expense) => {
-    acc[expense.category] = (acc[expense.category] || 0) + expense.amount;
-    return acc;
-  }, {});
+  interface CategoryExpenses {
+    [key: string]: number;
+  }
+
+  const categoryExpenses: CategoryExpenses = expenses.reduce(
+    (acc: CategoryExpenses, expense) => {
+      acc[expense.category] = (acc[expense.category] || 0) + expense.amount;
+      return acc;
+    },
+    {}
+  );
 
   const pieData = {
     labels: Object.keys(categoryExpenses),
