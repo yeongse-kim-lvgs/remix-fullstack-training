@@ -43,6 +43,12 @@ export default function ExpenseTrackerWithChart() {
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
   const [isFixed, setIsFixed] = useState(false);
+  const [filterCategory, setFilterCategory] = useState<Category | "">("");
+  const [filteredExpenses, setFilteredExpenses] = useState<Expense[]>([]);
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [dailyExpenses, setDailyExpenses] = useState<{
+    [date: string]: number;
+  }>({});
 
   const categories = Object.values(Category);
 
@@ -64,6 +70,27 @@ export default function ExpenseTrackerWithChart() {
   useEffect(() => {
     localStorage.setItem("expenses", JSON.stringify(expenses));
   }, [expenses]);
+
+  // フィルタリングされた支出の計算、合計金額と日ごとの集計をuseEffectで管理
+  useEffect(() => {
+    // フィルタリング処理
+    const filtered = filterCategory
+      ? expenses.filter((expense) => expense.category === filterCategory)
+      : expenses;
+    setFilteredExpenses(filtered);
+
+    // 合計金額を計算
+    const total = filtered.reduce((sum, expense) => sum + expense.amount, 0);
+    setTotalAmount(total);
+
+    // 日付ごとの支出を集計
+    const dailyTotals = filtered.reduce((acc, expense) => {
+      const date = expense.date;
+      acc[date] = (acc[date] || 0) + expense.amount;
+      return acc;
+    }, {});
+    setDailyExpenses(dailyTotals);
+  }, [expenses, filterCategory]); // 依存配列にexpensesとfilterCategoryを設定
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -114,20 +141,6 @@ export default function ExpenseTrackerWithChart() {
     setIsFixed(expense.isFixed);
     setEditingIndex(index);
   };
-
-  const filteredExpenses = expenses;
-
-  const totalAmount = filteredExpenses.reduce(
-    (sum, expense) => sum + expense.amount,
-    0
-  );
-
-  // 日付ごとの支出を集計
-  const dailyExpenses = filteredExpenses.reduce((acc, expense) => {
-    const date = expense.date;
-    acc[date] = (acc[date] || 0) + expense.amount;
-    return acc;
-  }, {});
 
   const dates = Object.keys(dailyExpenses);
   const amounts = Object.values(dailyExpenses);
