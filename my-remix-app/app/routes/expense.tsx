@@ -3,7 +3,7 @@ import { Chart, Bar, Pie } from "react-chartjs-2";
 import "chart.js/auto";
 import dayjs from "dayjs";
 
-// Enumでカテゴリーを定義
+// CategoryをEnumで定義
 enum Category {
   Food = "食費",
   Rent = "家賃",
@@ -12,17 +12,38 @@ enum Category {
   Misc = "雑費",
 }
 
+// User型を定義
+interface User {
+  id: number;
+  name: string;
+}
+
+// Item型を定義
+interface Item {
+  name: string;
+  price: number;
+}
+
+// Expense型にUserとItem型を入れる
+interface Expense {
+  amount: number;
+  category: Category;
+  description: string;
+  date: string; // YYYY-MM-DD形式の文字列
+  isFixed: boolean;
+  user: User; // User型をプロパティとして含む
+  items?: Item[]; // Item型の配列をオプションで含む
+}
+
 export default function ExpenseTrackerWithChart() {
+  const [expenses, setExpenses] = useState<Expense[]>([]); // Expense型の配列を指定
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [amount, setAmount] = useState("");
-  const [category, setCategory] = useState<Category | "">(""); // Enumか空文字を許容
+  const [category, setCategory] = useState<Category | "">("");
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
   const [isFixed, setIsFixed] = useState(false);
-  const [expenses, setExpenses] = useState([]);
-  const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  const [filterCategory, setFilterCategory] = useState<Category | "">(""); // Enumか空文字を許容
 
-  // Enumからカテゴリーのリストを取得
   const categories = Object.values(Category);
 
   // 初回レンダリング時に現在の日付を取得
@@ -47,12 +68,19 @@ export default function ExpenseTrackerWithChart() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const newExpense = {
+    const newExpense: Expense = {
       amount: Number(amount),
-      category,
+      category: category as Category,
       description,
       date,
       isFixed,
+      user: {
+        id: 1, // 仮のユーザーID
+        name: "John Doe", // 仮のユーザー名
+      },
+      items: [
+        { name: "ランチ", price: 1000 }, // アイテム情報を追加
+      ],
     };
 
     if (editingIndex !== null) {
@@ -77,7 +105,7 @@ export default function ExpenseTrackerWithChart() {
 
   const handleEdit = (index) => {
     const expense = expenses[index];
-    setAmount(expense.amount);
+    setAmount(expense.amount.toString());
     setCategory(expense.category);
     setDescription(expense.description);
     setDate(expense.date);
@@ -85,9 +113,7 @@ export default function ExpenseTrackerWithChart() {
     setEditingIndex(index);
   };
 
-  const filteredExpenses = filterCategory
-    ? expenses.filter((expense) => expense.category === filterCategory)
-    : expenses;
+  const filteredExpenses = expenses;
 
   const totalAmount = filteredExpenses.reduce(
     (sum, expense) => sum + expense.amount,
@@ -115,7 +141,6 @@ export default function ExpenseTrackerWithChart() {
     }[];
   }
 
-  // 日ごとの支出データ
   const dailyExpensesData: ExpenseData = {
     labels: dates,
     datasets: [
@@ -230,22 +255,6 @@ export default function ExpenseTrackerWithChart() {
       </form>
 
       <div className='mt-8'>
-        <h2 className='text-xl font-semibold'>支出フィルター</h2>
-        <select
-          onChange={(e) => setFilterCategory(e.target.value as Category)}
-          value={filterCategory}
-          className='border border-gray-300 rounded p-2 w-full'
-        >
-          <option value=''>すべて</option>
-          {categories.map((cat, index) => (
-            <option key={index} value={cat}>
-              {cat}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className='mt-8'>
         <h2 className='text-xl font-semibold'>支出一覧</h2>
         <ul className='space-y-2'>
           {filteredExpenses.map((expense, index) => (
@@ -255,7 +264,7 @@ export default function ExpenseTrackerWithChart() {
             >
               <div>
                 {expense.date}: {expense.category} - {expense.amount}円 (
-                {expense.isFixed ? "固定費" : "変動費"})
+                {expense.isFixed ? "固定費" : "変動費"}) - {expense.user.name}
               </div>
               <div className='space-x-2'>
                 <button
