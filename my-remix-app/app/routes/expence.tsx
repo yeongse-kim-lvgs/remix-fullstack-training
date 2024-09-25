@@ -183,9 +183,9 @@ export default function ExpenseTrackerWithChart() {
             className='border border-gray-300 rounded p-2 w-full'
           >
             <option value=''>選択してください</option>
-            {categories.map((cat, index) => (
-              <option key={index} value={cat}>
-                {cat}
+            {categories.map((category, index) => (
+              <option key={index} value={category}>
+                {category}
               </option>
             ))}
           </select>
@@ -235,9 +235,9 @@ export default function ExpenseTrackerWithChart() {
           className='border border-gray-300 rounded p-2 w-full'
         >
           <option value=''>すべて</option>
-          {categories.map((cat, index) => (
-            <option key={index} value={cat}>
-              {cat}
+          {categories.map((category, index) => (
+            <option key={index} value={category}>
+              {category}
             </option>
           ))}
         </select>
