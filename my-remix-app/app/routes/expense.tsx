@@ -32,7 +32,12 @@ interface Expense {
   date: string; // YYYY-MM-DD形式の文字列
   isFixed: boolean;
   user: User; // User型をプロパティとして含む
-  items: Item[] = [];
+  items: Item[]; // 空配列として初期化するためオプショナルではない
+}
+
+// CategoryExpensesの型を定義（キーはCategoryの値に限定）
+interface CategoryExpenses {
+  [key in Category]: number;
 }
 
 export default function ExpenseTrackerWithChart() {
@@ -88,7 +93,7 @@ export default function ExpenseTrackerWithChart() {
       const date = expense.date;
       acc[date] = (acc[date] || 0) + expense.amount;
       return acc;
-    }, {});
+    }, {} as { [date: string]: number });
     setDailyExpenses(dailyTotals);
   }, [expenses, filterCategory]); // 依存配列にexpensesとfilterCategoryを設定
 
@@ -107,9 +112,7 @@ export default function ExpenseTrackerWithChart() {
         id: 1, // 仮のユーザーID
         name: "John Doe", // 仮のユーザー名
       },
-      items: [
-        { name: "ランチ", price: 1000 }, // アイテム情報を追加
-      ],
+      items: [], // 空の配列で初期化
     };
 
     if (editingIndex !== null) {
