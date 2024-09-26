@@ -32,7 +32,7 @@ interface Expense {
   date: string; // YYYY-MM-DD形式の文字列
   isFixed: boolean;
   user: User; // User型をプロパティとして含む
-  items?: Item[]; // Item型の配列をオプションで含む
+  items: Item[] = [];
 }
 
 export default function ExpenseTrackerWithChart() {
