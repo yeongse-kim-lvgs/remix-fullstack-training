@@ -231,7 +231,7 @@ export default function ExpenseTrackerWithChart() {
       </div>
 
       <h2 className='text-xl font-semibold mt-8'>
-        合計支出金額: {totalAmount}円
+        合計支出金額: {Number(totalAmount).toFixed(2)}円
       </h2>
 
       <div className='mt-8'>
