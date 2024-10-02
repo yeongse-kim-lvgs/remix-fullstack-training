@@ -4,7 +4,7 @@ export async function createConnection() {
   return mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: "", // パスワードを設定
+    password: "ryuga-u-kadai", // パスワードを設定
     database: "expenses_db",
   });
 }
