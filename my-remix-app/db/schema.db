@@ -1,0 +1,29 @@
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    price DECIMAL(10, 2) NOT NULL
+);
+
+CREATE TABLE expenses (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    amount DECIMAL(10, 2) NOT NULL,
+    category ENUM('食費', '家賃', '交通費', 'エンターテインメント', '雑費') NOT NULL,
+    description VARCHAR(255),
+    date DATE NOT NULL,
+    is_fixed BOOLEAN NOT NULL,
+    user_id INT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE expense_items (
+    expense_id INT NOT NULL,
+    item_id INT NOT NULL,
+    PRIMARY KEY (expense_id, item_id),
+    FOREIGN KEY (expense_id) REFERENCES expenses(id),
+    FOREIGN KEY (item_id) REFERENCES items(id)
+);
